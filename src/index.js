@@ -1,10 +1,39 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import axios from 'axios';
 import Users from './Users';
 import User from './User';
 
+const App = ()=> {
+  const [users, setUsers] = useState([]);
+  const [userId, setUserId] = useState('');
+  useEffect(()=> {
+    const load = async()=> {
+      const userId = window.location.hash.slice(1);
+      setUserId(userId);
+      const response = await axios.get('/api/users');
+      setUsers(response.data);
+      window.addEventListener('hashchange', ()=> {
+        const userId = window.location.hash.slice(1);
+        setUserId(userId);
+      });
+    };
+    load();
 
+  }, []);
+  return (
+    <div>
+      <h1>Acme Writers Group ({ users.length })</h1>
+      <main>
+        <Users users = { users } userId={ userId }/>
+        {
+          userId ? <User userId={ userId } /> : null
+        }
+      </main>
+    </div>
+  );
+};
+/*
 class App extends Component{
   constructor(){
     super();
@@ -44,6 +73,7 @@ class App extends Component{
     );
   }
 }
+*/
 
 const root = document.querySelector('#root');
 render(<App />, root);
