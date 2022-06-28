@@ -42,6 +42,11 @@ app.get('/api/users/:id/stories', async(req, res, next)=> {
   }
 });
 
+app.use((err, req, res, next)=> {
+  console.log(err);
+  res.status(500).send(err);
+});
+
 
 const port = process.env.PORT || 3000;
 
