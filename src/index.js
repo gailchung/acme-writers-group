@@ -12,9 +12,20 @@ class App extends Component{
       users: [],
       userId: ''
     };
+    this.destroyUser = this.destroyUser.bind(this);
+  }
+  destroyUser(user){
+    console.log(this);
+    console.log(user);
+    console.log('destroy on server');
+    console.log('remove from state');
+    if(this.state.userId){
+      window.location.hash = '';
+    }
   }
   async componentDidMount(){
     try {
+      console.log(this.props);
       const userId = window.location.hash.slice(1);
       this.setState({ userId });
       const response = await axios.get('/api/users');
@@ -31,11 +42,12 @@ class App extends Component{
   }
   render(){
     const { users, userId } = this.state;
+    const { destroyUser } = this;
     return (
       <div>
         <h1>Acme Writers Group ({ users.length })</h1>
         <main>
-          <Users users = { users } userId={ userId }/>
+          <Users users = { users } userId={ userId } destroy = { destroyUser }/>
           {
             userId ? <User userId={ userId } /> : null
           }
@@ -46,6 +58,6 @@ class App extends Component{
 }
 
 const root = document.querySelector('#root');
-render(<App />, root);
+render(<App/>, root);
 
 
