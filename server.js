@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
-const { User, Story } = require('./db');
+const { db, User, Story } = require('./db');
 const path = require('path');
+const { USERS, STORIES } = require("./seed-data");
 
 app.use('/dist', express.static('dist'));
 
@@ -51,3 +52,13 @@ app.use((err, req, res, next)=> {
 const port = process.env.PORT || 3000;
 
 app.listen(port, ()=> console.log(`listening on port ${port}`));
+
+const seed = async()=> {
+  await db.sync({force: true})
+  
+  //Prepopulate User data
+  await Promise.all(USERS.map( user => User.create(user)))
+  await Promise.all(STORIES.map( story => Story.create(story)))
+};
+
+seed();
