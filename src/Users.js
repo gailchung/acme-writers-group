@@ -1,11 +1,15 @@
 import React from 'react';
+import { USERS } from '../seed-data';
 
 
-const Users = ({ users, userId, destroy })=> {
+const Users = ({ users, userId, destroy,deleteAUser})=> {
   return (
     <ul>
+
       <li className={ !userId ? 'selected': ''}>
+
         <a href='#'>Users</a>
+
       </li>
       {
         users.map( user => {
@@ -14,7 +18,11 @@ const Users = ({ users, userId, destroy })=> {
               <a href={`#${user.id}`}>
                 { user.name }
               </a>
+              <button onClick={ ()=> deleteAUser(user)}>Delete User</button>
               <button onClick={()=> destroy(user)}>x</button>
+
+
+                   
             </li>
           );
         })

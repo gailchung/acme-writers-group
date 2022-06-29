@@ -4,6 +4,7 @@ const { db, User, Story } = require('./db');
 const path = require('path');
 const { USERS, STORIES } = require("./seed-data");
 
+
 app.use('/dist', express.static('dist'));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
@@ -42,6 +43,38 @@ app.get('/api/users/:id/stories', async(req, res, next)=> {
     next(ex);
   }
 });
+
+app.post('/api/users', async(req, res, next)=> {
+  try {
+    res.status(201).send(await User.create(req.body));
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.delete('/api/users/:id', async(req, res, next)=> {
+  try {
+    const user = await User.findByPk(req.params.id);
+    await user.destroy();
+    res.sendStatus(204);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
+app.delete('/api/stories/${id}', async(req, res, next)=> {
+  try {
+    const story = await Story.findByPk(req.params.id);
+    await story.destroy();
+    res.sendStatus(204);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
+
 
 app.use((err, req, res, next)=> {
   console.log(err);

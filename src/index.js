@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import axios from 'axios';
 import Users from './Users';
 import User from './User';
+import { deleteUser, createUser } from './api';
 
 
 class App extends Component{
@@ -13,6 +14,9 @@ class App extends Component{
       userId: ''
     };
     this.destroyUser = this.destroyUser.bind(this);
+    this.deleteAUser = this.deleteAUser.bind(this);
+
+
   }
   destroyUser(user){
     console.log(this);
@@ -23,6 +27,19 @@ class App extends Component{
       window.location.hash = '';
     }
   }
+
+  async deleteAUser (user) {
+    await deleteUser(user);
+          const users = this.state.users.filter(_user => _user.id!== user.id);
+          this.setState({users});
+      }
+  
+  async createAUser(){
+        const user = await createUser({ name: Math.random() });
+        const users = [...this.state.users, user];
+        this.setState({ users });
+      }
+
   async componentDidMount(){
     try {
       console.log(this.props);
@@ -38,19 +55,23 @@ class App extends Component{
     catch(ex){
       console.log(ex);
     }
-
   }
+
+
+  
   render(){
     const { users, userId } = this.state;
-    const { destroyUser } = this;
+    const { destroyUser, deleteAUser, createAUser  } = this;
     return (
       <div>
         <h1>Acme Writers Group ({ users.length })</h1>
         <main>
-          <Users users = { users } userId={ userId } destroy = { destroyUser }/>
+
+          <Users users = { users } userId={ userId } destroy = { destroyUser } deleteAUser = { deleteAUser } createAUser = {createAUser}/>
           {
             userId ? <User userId={ userId } /> : null
           }
+
         </main>
       </div>
     );
